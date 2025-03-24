@@ -4,14 +4,14 @@ public class Student {
     private String firstname;
     private String lastname;
     private String address;
-    private int birthday;
+    private String birthday;
     private String mobilenumber;
     private String emailaddress;
     private String holdername;
     private String holdersphonenumber;
 
 
-    public Student(String firstname,String lastname,String address,String mobilenumber , int birthday, String emailaddress, String holdername, String holdersphonenumber ){
+    public Student(String firstname,String lastname,String address,String mobilenumber , String birthday, String emailaddress, String holdername ){
         this.firstname=firstname;
         this.lastname = lastname;
         this.address=address;
@@ -31,7 +31,7 @@ public class Student {
         return lastname;
     }
 
-    public int getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
