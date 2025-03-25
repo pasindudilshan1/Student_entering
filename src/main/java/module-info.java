@@ -5,6 +5,7 @@ module com.example.student_entering {
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires net.synedra.validatorfx;
+    requires java.sql;
 
     opens com.example.student_entering to javafx.fxml;
     exports com.example.student_entering;
