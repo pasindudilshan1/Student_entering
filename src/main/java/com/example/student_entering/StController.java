@@ -1,4 +1,5 @@
 package com.example.student_entering;
+import javafx.scene.control.DatePicker;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -6,6 +7,8 @@ import javafx.scene.control.TextField;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class StController {
     @FXML
@@ -15,7 +18,7 @@ public class StController {
     @FXML
     private TextField addressField;
     @FXML
-    private TextField birthdayField;
+    private DatePicker birthdayPicker;
     @FXML
     private TextField mobilenumberField;
     @FXML
@@ -30,18 +33,31 @@ public class StController {
         String firstname = firstnameField.getText();
         String lastname = lastnameField.getText();
         String address = addressField.getText();
-        String birthday = birthdayField.getText();
+
         String mobilenumber = mobilenumberField.getText();
         String emailaddress = emailaddressField.getText();
         String holdername = holdernameField.getText();
         String holdersphonenumber = holdersphonenumberField.getText();
 
-        if (firstname.isEmpty() || lastname.isEmpty() || address.isEmpty() || birthday.isEmpty() || mobilenumber.isEmpty() || emailaddress.isEmpty() || holdername.isEmpty() || holdersphonenumber.isEmpty()) {
+        LocalDate birthday = birthdayPicker.getValue();
+        if (birthday == null) {
+            showAlert("Error", "Please select a valid birthday.");
+            return;
+        }
+        if (firstname.isEmpty() || lastname.isEmpty() || address.isEmpty() || birthday == null || mobilenumber.isEmpty() || emailaddress.isEmpty() || holdername.isEmpty() || holdersphonenumber.isEmpty()) {
             showAlert("Error", "All fields must be filled");
             return;
         }
 
-        // Database connection
+
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = birthday.format(formatter);
+
+
+
+
+
         try (Connection conn = student_db.connect()) {
             if (conn == null) {
                 showAlert("Error", "Database connection failed.");
@@ -55,13 +71,12 @@ public class StController {
                 stmt.setString(2, lastname);
                 stmt.setString(3, address);
                 stmt.setString(4, mobilenumber);
-                stmt.setString(5, birthday);
+                stmt.setDate(5, java.sql.Date.valueOf(birthday));
                 stmt.setString(6, emailaddress);
                 stmt.setString(7, holdername);
                 stmt.setString(8, holdersphonenumber);
 
-                stmt.executeUpdate(); // Execute the query
-
+                stmt.executeUpdate();
                 showAlert("Success", "Student added successfully!");
                 clearFields();
             }
@@ -74,14 +89,14 @@ public class StController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setContentText(message);
-        alert.show(); // This line ensures the alert is displayed
+        alert.show();
     }
 
     private void clearFields() {
         firstnameField.clear();
         lastnameField.clear();
         addressField.clear();
-        birthdayField.clear();
+        birthdayPicker.setValue(null);
         mobilenumberField.clear();
         emailaddressField.clear();
         holdernameField.clear();
